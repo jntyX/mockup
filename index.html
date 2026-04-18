@@ -121,7 +121,7 @@
             text-align: center; background: rgba(255,255,255,0.02);
             padding: 12px 5px; border-radius: 18px; border: 1px solid var(--border);
         }
-        .summary-item small { font-size: 0.6rem; opacity: 0.6; text-transform: uppercase; display: block; }
+        .summary-item medium { font-size: 0.6rem; opacity: 0.6; text-transform: uppercase; display: block; }
         .summary-item div { font-size: 0.85rem; font-weight: 600; color: var(--accent); margin-top: 4px; }
         .hidden-amt { filter: blur(6px); }
 
@@ -254,10 +254,10 @@
 
         <!-- Stats -->
         <div class="stats-summary">
-            <div class="summary-item"><small>Income</small><div id="t-sal">₱0</div></div>
-            <div class="summary-item"><small>Spent</small><div id="t-spent" style="color:var(--danger)">₱0</div></div>
+            <div class="summary-item"><medium>Income</medium><div id="t-sal">₱0</div></div>
+            <div class="summary-item"><medium>Spent</medium><div id="t-spent" style="color:var(--danger)">₱0</div></div>
             <div class="summary-item">
-                <small>Savings <span onclick="togglePrivacy()" style="cursor:pointer">👁️</span></small>
+                <medium>Savings <span onclick="togglePrivacy()" style="cursor:pointer">👀</span></medium>
                 <div id="t-saved" class="hidden-amt">₱0</div>
             </div>
         </div>
@@ -272,11 +272,11 @@
                 <div class="comparison-container">
                     <div class="bar-wrapper">
                         <div class="bar salary-bar" id="s-bar" style="height:0%"></div>
-                        <small style="font-size:0.6rem;margin-top:8px;opacity:0.6;">Income</small>
+                        <medium style="font-size:0.6rem;margin-top:8px;opacity:0.6;">Income</medium>
                     </div>
                     <div class="bar-wrapper">
                         <div class="bar spent-bar" id="e-bar" style="height:0%"></div>
-                        <small style="font-size:0.6rem;margin-top:8px;opacity:0.6;">Expenses</small>
+                        <medium style="font-size:0.6rem;margin-top:8px;opacity:0.6;">Expenses</medium>
                     </div>
                 </div>
             </div>
@@ -870,11 +870,11 @@ function updateDashboardUI() {
             <div class="comparison-container">
                 <div class="bar-wrapper">
                     <div class="bar salary-bar" style="height:${totalSalary > 0 ? Math.min((totalSalary / Math.max(totalSalary, totalSpent, 1)) * 100, 100) : 0}%"></div>
-                    <small style="font-size:0.6rem;margin-top:8px;opacity:0.6;">Income</small>
+                    <medium style="font-size:0.6rem;margin-top:8px;opacity:0.6;">Income</medium>
                 </div>
                 <div class="bar-wrapper">
                     <div class="bar spent-bar" style="height:${totalSpent > 0 ? Math.min((totalSpent / Math.max(totalSalary, totalSpent, 1)) * 100, 100) : 0}%"></div>
-                    <small style="font-size:0.6rem;margin-top:8px;opacity:0.6;">Expenses</small>
+                    <medium style="font-size:0.6rem;margin-top:8px;opacity:0.6;">Expenses</medium>
                 </div>
             </div>
         </div>`;
