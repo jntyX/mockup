@@ -546,11 +546,15 @@ async function handleSignup() {
     btn.innerText = 'Continue →';
     showModal('setupQAModal');
 }
-    async function saveQA() {
+    
+async function saveQA() {
     const answer = document.getElementById('qa-answer').value.trim().toLowerCase();
     const errEl = document.getElementById('qa-err');
 
-    if (!answer) { errEl.style.display = 'block'; return; }
+    if (!answer) { 
+        errEl.style.display = 'block'; 
+        return; 
+    }
 
     const btn = document.querySelector('#setupQAModal .btn-glass-add');
     btn.innerText = 'Saving...';
@@ -563,28 +567,46 @@ async function handleSignup() {
     if (!email || !hashedPass || !rawPass) {
         alert('Session expired. Please sign up again.');
         showModal('signupModal');
-        btn.innerText = 'Save & Finish ✅'; return;
+        btn.innerText = 'Save & Finish ✅'; 
+        return;
     }
 
+    // 1. Create the Auth User (This triggers the SQL function in Supabase)
     const { data: authData, error: authError } = await sb.auth.signUp({
-    email,
-    password: rawPass // This matches the variable you got from sessionStorage
-});
+        email,
+        password: rawPass 
+    });
 
-    if (authError && !authError.message.includes('already registered')) {
-        alert('Error: ' + authError.message);
-        btn.innerText = 'Save & Finish ✅'; return;
+    if (authError) {
+        if (authError.message.includes('already registered')) {
+            alert("This email is already registered. Please login.");
+            showModal('loginModal');
+        } else {
+            alert('Error: ' + authError.message);
+        }
+        btn.innerText = 'Save & Finish ✅'; 
+        return;
     }
-// Update the row that the SQL Trigger already created!
+
+    // --- THIS IS THE CRITICAL UPDATE BLOCK ---
     const userId = authData?.user?.id;
     if (userId) {
-        await sb.from('users').update({
-            passcode: hashedPass,
+        // We use .update() because the SQL Trigger already created the row.
+        // We are just filling in the details.
+        const { error: updateError } = await sb.from('users').update({
+            passcode: hashedPass,      
             recovery_answer: hashedAnswer,
             is_active: true
         }).eq('user_id', userId); 
+
+        if (updateError) {
+            console.error("Database Update Error:", updateError);
+            alert("Profile update failed: " + updateError.message);
+            btn.innerText = 'Save & Finish ✅'; return;
+        }
     }
-        
+    // ------------------------------------------
+
     sessionStorage.removeItem('pending_email');
     sessionStorage.removeItem('pending_pass');
     sessionStorage.removeItem('raw_pass');
@@ -605,8 +627,6 @@ async function handleSignup() {
         alert('Error creating account: ' + authError.message);
         btn.innerText = 'Save & Finish ✅'; return;
     }
-
-    
 
     // Insert into users table
     const userId = authData?.user?.id;
