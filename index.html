@@ -617,15 +617,6 @@ async function saveQA() {
     showModal('loginModal');
 }
 
-    sessionStorage.removeItem('pending_email');
-    sessionStorage.removeItem('pending_pass');
-
-    errEl.style.display = 'none';
-    btn.innerText = 'Save & Finish ✅';
-    alert('✅ Account created! Please login with your email and passcode.');
-    showModal('loginModal');
-}
-
 // ========================
 // LOGIN
 // ========================
