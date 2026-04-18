@@ -519,7 +519,7 @@ async function handleSignup() {
         errEl.innerText = 'Please enter a valid email.';
         errEl.style.display = 'block'; return;
     }
-    if (pass.length !== 4 || isNaN(pass)) {
+    if (pass.length !== 6 || isNaN(pass)) {
         errEl.innerText = 'Passcode must be exactly 4 digits.';
         errEl.style.display = 'block'; return;
     }
