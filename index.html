@@ -339,7 +339,7 @@
 <div id="loginModal" class="modal" style="display:block;">
     <h3>🔐 Unlock talliy</h3>
     <input type="email" id="l-email" placeholder="Email address">
-    <input type="password" id="l-pass" placeholder="••••" maxlength="4" inputmode="numeric"
+    <input type="password" id="l-pass" placeholder="••••" maxlength="6" inputmode="numeric"
         style="text-align:center;font-size:1.5rem;letter-spacing:0.5rem;"
         onkeydown="if(event.key==='Enter')handleLogin()">
     <p id="l-err" class="err">Wrong email or passcode.</p>
@@ -359,7 +359,7 @@
 <div id="signupModal" class="modal">
     <h3>🌱 Create Account</h3>
     <input type="email" id="s-email" placeholder="Email address">
-    <input type="password" id="s-pass" placeholder="Create 4-digit passcode" maxlength="4" inputmode="numeric"
+    <input type="password" id="s-pass" placeholder="Create 6-digit passcode" maxlength="6" inputmode="numeric"
         style="text-align:center;font-size:1.5rem;letter-spacing:0.5rem;">
     <p id="s-err" class="err"></p>
     <button class="btn-glass-add" onclick="handleSignup()">Continue →</button>
