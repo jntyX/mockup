@@ -1157,10 +1157,19 @@ async function deleteSavings(id) {
 // ========================
 window.onload = async () => {
     const { data: { session } } = await sb.auth.getSession();
+    
     if (session) {
+        // 1. Fetch the user profile
         const { data: userData } = await sb.from('users')
-            .select('*').eq('user_id', session.user.id).single();
+            .select('*')
+            .eq('user_id', session.user.id)
+            .single();
+
         if (userData) {
+            // 2. CRITICAL: Set the global currentUser variable HERE 
+            // before calling unlockApp or init
+            currentUser = session.user; 
+            
             unlockApp(session.user, userData.plan || 'free');
         } else {
             showModal('loginModal');
