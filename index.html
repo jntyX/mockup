@@ -339,7 +339,7 @@
 <div id="loginModal" class="modal" style="display:block;">
     <h3>🔐 Unlock talliy</h3>
     <input type="email" id="l-email" placeholder="Email address">
-    <input type="password" id="l-pass" placeholder="••••" maxlength="6" inputmode="numeric"
+    <input type="password" id="l-pass" placeholder="••••••" maxlength="6" inputmode="numeric"
         style="text-align:center;font-size:1.5rem;letter-spacing:0.5rem;"
         onkeydown="if(event.key==='Enter')handleLogin()">
     <p id="l-err" class="err">Wrong email or passcode.</p>
@@ -390,7 +390,7 @@
 <!-- SCREEN 5: RESET PASSCODE -->
 <div id="resetModal" class="modal">
     <h3>🔄 New Passcode</h3>
-    <input type="password" id="r-pass" placeholder="••••" maxlength="4" inputmode="numeric"
+    <input type="password" id="r-pass" placeholder="••••••" maxlength="6" inputmode="numeric"
         style="text-align:center;font-size:1.5rem;letter-spacing:0.5rem;">
     <button class="btn-glass-add" onclick="saveResetPasscode()">Save Passcode</button>
 </div>
