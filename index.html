@@ -567,9 +567,9 @@ async function handleSignup() {
     }
 
     const { data: authData, error: authError } = await sb.auth.signUp({
-        email,
-        password: rawPass // Sending the 6-digit raw string to satisfy Supabase
-    });
+    email,
+    password: rawPass // This matches the variable you got from sessionStorage
+});
 
     if (authError && !authError.message.includes('already registered')) {
         alert('Error: ' + authError.message);
