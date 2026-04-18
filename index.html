@@ -575,17 +575,16 @@ async function handleSignup() {
         alert('Error: ' + authError.message);
         btn.innerText = 'Save & Finish ✅'; return;
     }
-
+// Update the row that the SQL Trigger already created!
     const userId = authData?.user?.id;
     if (userId) {
-        // Update the row created by your SQL Trigger
         await sb.from('users').update({
             passcode: hashedPass,
             recovery_answer: hashedAnswer,
             is_active: true
         }).eq('user_id', userId); 
     }
-
+        
     sessionStorage.removeItem('pending_email');
     sessionStorage.removeItem('pending_pass');
     sessionStorage.removeItem('raw_pass');
