@@ -519,15 +519,16 @@ async function handleSignup() {
         errEl.innerText = 'Please enter a valid email.';
         errEl.style.display = 'block'; return;
     }
+
+    // UPDATED: Now strictly requiring 6 digits
     if (pass.length !== 6 || isNaN(pass)) {
-        errEl.innerText = 'Passcode must be exactly 4 digits.';
+        errEl.innerText = 'Passcode must be exactly 6 digits.';
         errEl.style.display = 'block'; return;
     }
 
     const btn = document.querySelector('#signupModal .btn-glass-add');
     btn.innerText = 'Creating...';
 
-    // Check email not already used
     const { data: existing } = await sb.from('users').select('id').eq('email', email).single();
     if (existing) {
         errEl.innerText = 'Email already registered. Please login.';
@@ -535,20 +536,17 @@ async function handleSignup() {
         btn.innerText = 'Continue →'; return;
     }
 
-    // Hash passcode and save temporarily in sessionStorage for after Q&A
     const hashed = await hashValue(pass);
     sessionStorage.setItem('pending_email', email);
     sessionStorage.setItem('pending_pass', hashed);
+    // Also store raw pass for the auth signup if you're using it as the password
+    sessionStorage.setItem('raw_pass', pass); 
 
     errEl.style.display = 'none';
     btn.innerText = 'Continue →';
     showModal('setupQAModal');
 }
-
-// ========================
-// SAVE Q&A (FORCED)
-// ========================
-async function saveQA() {
+    async function saveQA() {
     const answer = document.getElementById('qa-answer').value.trim().toLowerCase();
     const errEl = document.getElementById('qa-err');
 
@@ -559,13 +557,44 @@ async function saveQA() {
 
     const email = sessionStorage.getItem('pending_email');
     const hashedPass = sessionStorage.getItem('pending_pass');
+    const rawPass = sessionStorage.getItem('raw_pass');
     const hashedAnswer = await hashValue(answer);
 
-    if (!email || !hashedPass) {
+    if (!email || !hashedPass || !rawPass) {
         alert('Session expired. Please sign up again.');
         showModal('signupModal');
         btn.innerText = 'Save & Finish ✅'; return;
     }
+
+    const { data: authData, error: authError } = await sb.auth.signUp({
+        email,
+        password: rawPass // Sending the 6-digit raw string to satisfy Supabase
+    });
+
+    if (authError && !authError.message.includes('already registered')) {
+        alert('Error: ' + authError.message);
+        btn.innerText = 'Save & Finish ✅'; return;
+    }
+
+    const userId = authData?.user?.id;
+    if (userId) {
+        // Update the row created by your SQL Trigger
+        await sb.from('users').update({
+            passcode: hashedPass,
+            recovery_answer: hashedAnswer,
+            is_active: true
+        }).eq('user_id', userId); 
+    }
+
+    sessionStorage.removeItem('pending_email');
+    sessionStorage.removeItem('pending_pass');
+    sessionStorage.removeItem('raw_pass');
+
+    errEl.style.display = 'none';
+    btn.innerText = 'Save & Finish ✅';
+    alert('✅ Account created! Please login with your 6-digit passcode.');
+    showModal('loginModal');
+}
 
     // Create auth user via Supabase Auth
     const { data: authData, error: authError } = await sb.auth.signUp({
@@ -577,6 +606,8 @@ async function saveQA() {
         alert('Error creating account: ' + authError.message);
         btn.innerText = 'Save & Finish ✅'; return;
     }
+
+    
 
     // Insert into users table
     const userId = authData?.user?.id;
@@ -609,34 +640,33 @@ async function handleLogin() {
     const errEl = document.getElementById('l-err');
     const btn = document.querySelector('#loginModal .btn-glass-add');
 
-    if (!email || pass.length !== 4 || isNaN(pass)) {
+    // UPDATED: Check for 6 digits
+    if (!email || pass.length !== 6 || isNaN(pass)) {
+        errEl.innerText = "Enter a valid email and 6-digit passcode.";
         errEl.style.display = 'block'; return;
     }
 
     btn.innerText = 'Logging in...';
     const hashedPass = await hashValue(pass);
 
-    // Check against users table
     const { data: userData, error } = await sb.from('users')
         .select('*').eq('email', email).eq('passcode', hashedPass).single();
 
     if (error || !userData) {
+        errEl.innerText = "Invalid credentials.";
         errEl.style.display = 'block';
         btn.innerText = 'Login'; return;
     }
 
-    // Sign in via Supabase Auth
     const { error: authErr } = await sb.auth.signInWithPassword({
-        email, password: hashedPass
+        email, password: pass // Use the raw 6-digit pass
     });
 
     if (authErr) {
+        errEl.innerText = "Auth failed: " + authErr.message;
         errEl.style.display = 'block';
         btn.innerText = 'Login'; return;
     }
-
-    errEl.style.display = 'none';
-    btn.innerText = 'Login';
 
     const { data: { user } } = await sb.auth.getUser();
     unlockApp(user, userData.plan || 'free');
@@ -680,7 +710,8 @@ async function checkRecovery() {
 
 async function saveResetPasscode() {
     const pass = document.getElementById('r-pass').value;
-    if (pass.length !== 4 || isNaN(pass)) { alert('Enter a valid 4-digit passcode.'); return; }
+    // UPDATED: Check for 6 digits
+    if (pass.length !== 6 || isNaN(pass)) { alert('Enter a valid 6-digit passcode.'); return; }
 
     const btn = document.querySelector('#resetModal .btn-glass-add');
     btn.innerText = 'Saving...';
@@ -689,12 +720,11 @@ async function saveResetPasscode() {
     const hashedPass = await hashValue(pass);
 
     await sb.from('users').update({ passcode: hashedPass }).eq('user_id', userId);
-    // Update auth password too
-    await sb.auth.updateUser({ password: hashedPass });
+    await sb.auth.updateUser({ password: pass }); // Update with raw 6-digit pass
 
     sessionStorage.removeItem('reset_user_id');
     btn.innerText = 'Save Passcode';
-    alert('✅ Passcode updated! Please login again.');
+    alert('✅ Passcode updated! Please login with your new 6 digits.');
     showModal('loginModal');
 }
 
