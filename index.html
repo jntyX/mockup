@@ -529,7 +529,7 @@ async function handleSignup() {
     const btn = document.querySelector('#signupModal .btn-glass-add');
     btn.innerText = 'Creating...';
 
-    const { data: existing } = await sb.from('users').select('id').eq('email', email).single();
+    const { data: existing } = await sb.from('users').select('id').eq('email', email).maybesingle();
     if (existing) {
         errEl.innerText = 'Email already registered. Please login.';
         errEl.style.display = 'block';
