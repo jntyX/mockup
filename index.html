@@ -965,7 +965,7 @@ function renderPremiumSections() {
                         <td>₱${parseFloat(i.total).toLocaleString()}</td>
                         <td>₱${parseFloat(i.monthly || 0).toLocaleString()}</td>
                         <td>${parseFloat(i.remaining) <= 0
-                            ? '<span style="color:var(--success);font-weight:600;">✅ Paid!</span>'
+                            ? '<span style="color:var(--success);font-weight:600;">✅Payment Completed!🥳</span>'
                             : '₱' + parseFloat(i.remaining).toLocaleString()}</td>
                         <td><button onclick="deleteInstallment('${i.id}')" style="background:none;border:none;color:var(--danger);cursor:pointer;">❌</button></td>
                     </tr>`).join('') || '<tr><td colspan="5" style="text-align:center;opacity:0.5;">No installments yet.</td></tr>'}
