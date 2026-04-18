@@ -529,7 +529,7 @@ async function handleSignup() {
     const btn = document.querySelector('#signupModal .btn-glass-add');
     btn.innerText = 'Creating...';
 
-    const { data: existing } = await sb.from('users').select('id').eq('email', email).maybesingle();
+    const { data: existing } = await sb.from('users').select('id').eq('email', email).maybeSingle();
     if (existing) {
         errEl.innerText = 'Email already registered. Please login.';
         errEl.style.display = 'block';
@@ -636,7 +636,7 @@ async function handleLogin() {
     const hashedPass = await hashValue(pass);
 
     const { data: userData, error } = await sb.from('users')
-        .select('*').eq('email', email).eq('passcode', hashedPass).maybesingle();
+        .select('*').eq('email', email).eq('passcode', hashedPass).maybeSingle();
 
     if (error || !userData) {
         errEl.innerText = "Invalid credentials.";
@@ -680,7 +680,7 @@ async function checkRecovery() {
     const hashedAnswer = await hashValue(answer);
 
     const { data, error } = await sb.from('users')
-        .select('*').eq('email', email).eq('recovery_answer', hashedAnswer).maybesingle();
+        .select('*').eq('email', email).eq('recovery_answer', hashedAnswer).maybeSingle();
 
     if (error || !data) {
         errEl.style.display = 'block';
@@ -729,7 +729,7 @@ async function redeemToken() {
 
     // Check token is valid and unused
     const { data: tokenData, error } = await sb.from('access_tokens')
-        .select('*').eq('token', token).eq('used', false).maybesingle();
+        .select('*').eq('token', token).eq('used', false).maybeSingle();
 
     if (error || !tokenData) {
         errEl.style.display = 'block';
@@ -738,7 +738,7 @@ async function redeemToken() {
 
     // Find user by email
     const { data: userData } = await sb.from('users')
-        .select('*').eq('email', email).maybesingle();
+        .select('*').eq('email', email).maybeSingle();
 
     if (!userData) {
         errEl.innerText = 'Email not found. Please create an account first.';
@@ -1154,7 +1154,7 @@ window.onload = async () => {
         const { data: userData, error } = await sb.from('users')
             .select('*')
             .eq('user_id', session.user.id)
-            .maybeSingle(); // .maybeSingle() is safer than .maybesingle()
+            .maybeSingle(); // .maybeSingle() is safer than .maybeSingle()
 
         // 4. Check if profile exists AND has a plan assigned
         if (userData && !error) {
