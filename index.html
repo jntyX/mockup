@@ -636,7 +636,7 @@ async function handleLogin() {
     const hashedPass = await hashValue(pass);
 
     const { data: userData, error } = await sb.from('users')
-        .select('*').eq('email', email).eq('passcode', hashedPass).single();
+        .select('*').eq('email', email).eq('passcode', hashedPass).maybesingle();
 
     if (error || !userData) {
         errEl.innerText = "Invalid credentials.";
@@ -680,7 +680,7 @@ async function checkRecovery() {
     const hashedAnswer = await hashValue(answer);
 
     const { data, error } = await sb.from('users')
-        .select('*').eq('email', email).eq('recovery_answer', hashedAnswer).single();
+        .select('*').eq('email', email).eq('recovery_answer', hashedAnswer).maybesingle();
 
     if (error || !data) {
         errEl.style.display = 'block';
@@ -729,7 +729,7 @@ async function redeemToken() {
 
     // Check token is valid and unused
     const { data: tokenData, error } = await sb.from('access_tokens')
-        .select('*').eq('token', token).eq('used', false).single();
+        .select('*').eq('token', token).eq('used', false).maybesingle();
 
     if (error || !tokenData) {
         errEl.style.display = 'block';
@@ -738,7 +738,7 @@ async function redeemToken() {
 
     // Find user by email
     const { data: userData } = await sb.from('users')
-        .select('*').eq('email', email).single();
+        .select('*').eq('email', email).maybesingle();
 
     if (!userData) {
         errEl.innerText = 'Email not found. Please create an account first.';
@@ -1154,7 +1154,7 @@ window.onload = async () => {
         const { data: userData, error } = await sb.from('users')
             .select('*')
             .eq('user_id', session.user.id)
-            .maybeSingle(); // .maybeSingle() is safer than .single()
+            .maybeSingle(); // .maybeSingle() is safer than .maybesingle()
 
         // 4. Check if profile exists AND has a plan assigned
         if (userData && !error) {
