@@ -1154,7 +1154,7 @@ window.onload = async () => {
         const { data: userData, error } = await sb.from('users')
             .select('*')
             .eq('user_id', session.user.id)
-            .maybeSingle(); // .maybeSingle() is safer than .maybeSingle()
+            .maybeSingle(); // .maybeSingle() is safer than .maybeSingle() 
 
         // 4. Check if profile exists AND has a plan assigned
         if (userData && !error) {
