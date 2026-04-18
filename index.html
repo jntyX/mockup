@@ -448,7 +448,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // ========================
 let currentUser = null;
 let currentPlan = 'free';
-let state = { transactions: [], salary: [], installments: [], savings: [] };
+let state = { transactions: [], salary: [], installments: [], savings: [], categories: [] };
 const shortMonths = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const longMonths = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 let selectedMonth = longMonths[new Date().getMonth()];
@@ -785,12 +785,14 @@ async function init() {
         sb.from('salary').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
         sb.from('installments').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
         sb.from('savings').select('*').eq('user_id', uid).order('created_at', { ascending: false })
+        sb.from('categories').select('*').eq('user_id', uid).order('created_at', { ascending: false })
     ]);
 
     state.transactions = tx || [];
     state.salary = sal || [];
     state.installments = inst || [];
     state.savings = sav || [];
+    state.categories = cats || [];
 
     renderMonthTabs();
     updateDashboardUI();
@@ -887,8 +889,9 @@ function updateDashboardUI() {
 // ========================
 function updateCategoryDropdown() {
     const instCats = state.installments.map(i => i.product).filter(Boolean);
+    const customCats = state.categories.map(c => c.name).filter(Boolean);
     const defaults = ['Food', 'Bills', 'Transport', 'Others'];
-    const all = [...defaults, ...instCats];
+    const all = [...defaults, ...instCats, ...customCats];
     const sel = document.getElementById('dash-cat');
     sel.innerHTML = all.map(c => `<option value="${c}">${c}</option>`).join('');
     if (currentPlan === 'premium') {
@@ -1003,10 +1006,16 @@ async function addTransaction() {
     const category = document.getElementById('dash-cat').value;
 
     if (category === 'ADD_NEW') {
-        const newCat = prompt('New category name:');
-        if (newCat) { document.getElementById('dash-cat').innerHTML += `<option value="${newCat}" selected>${newCat}</option>`; }
-        return;
+    const newCat = prompt('New category name:');
+    if (newCat && newCat.trim()) {
+        await sb.from('categories').insert([{
+            user_id: currentUser.id,
+            name: newCat.trim()
+        }]);
+        await init(); // Reload so new category appears in dropdown
     }
+    return;
+}
     if (!item || !amount || amount <= 0) { alert('Please fill in all fields.'); return; }
 
     const btn = document.querySelector('#dashboard .btn-glass-add');
