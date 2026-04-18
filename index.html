@@ -780,7 +780,6 @@ async function init() {
     if (!currentUser) return; // Exit early if user isn't set yet
     const month = selectedMonth;
     // ... rest of your Promise.all code
-}
     const uid = currentUser.id;
 
     const [{ data: tx }, { data: sal }, { data: inst }, { data: sav }] = await Promise.all([
