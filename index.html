@@ -1160,25 +1160,29 @@ async function deleteSavings(id) {
 // ENTRY POINT
 // ========================
 window.onload = async () => {
+    // 1. Get the current session
     const { data: { session } } = await sb.auth.getSession();
-    
+
     if (session) {
-        // 1. Fetch the user profile
-        const { data: userData } = await sb.from('users')
+        // 2. Set the global user variable immediately
+        currentUser = session.user;
+
+        // 3. Try to get their profile
+        const { data: userData, error } = await sb.from('users')
             .select('*')
             .eq('user_id', session.user.id)
-            .single();
+            .maybeSingle(); // .maybeSingle() is safer than .single()
 
-        if (userData) {
-            // 2. CRITICAL: Set the global currentUser variable HERE 
-            // before calling unlockApp or init
-            currentUser = session.user; 
-            
+        // 4. Check if profile exists AND has a plan assigned
+        if (userData && !error) {
             unlockApp(session.user, userData.plan || 'free');
         } else {
+            // If session exists but profile doesn't (Trigger failed or sync delay)
+            console.warn("Session found but no profile row. Showing login.");
             showModal('loginModal');
         }
     } else {
+        // No session at all
         showModal('loginModal');
     }
 };
