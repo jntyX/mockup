@@ -780,11 +780,11 @@ async function init() {
     if (!currentUser) return; 
     const uid = currentUser.id;
 
-    const [{ data: tx }, { data: sal }, { data: inst }, { data: sav }] = await Promise.all([
+    const [{ data: tx }, { data: sal }, { data: inst }, { data: sav }, { data: cats }] = await Promise.all([
         sb.from('transactions').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
         sb.from('salary').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
         sb.from('installments').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
-        sb.from('savings').select('*').eq('user_id', uid).order('created_at', { ascending: false })
+        sb.from('savings').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
         sb.from('categories').select('*').eq('user_id', uid).order('created_at', { ascending: false })
     ]);
 
@@ -799,8 +799,7 @@ async function init() {
     renderDailyTable();
     renderPremiumSections();
     updateCategoryDropdown();
-} // THIS MUST BE THE ONLY CLOSING BRACKET FOR INIT
-
+} // ← ONE closing bracket only
 // ========================
 // NAVIGATION
 // ========================
