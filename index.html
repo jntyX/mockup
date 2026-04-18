@@ -790,7 +790,10 @@ function premiumLockHTML(featureName) {
 // INIT — LOAD DATA
 // ========================
 async function init() {
-    if (!currentUser) return;
+    if (!currentUser) return; // Exit early if user isn't set yet
+    const month = selectedMonth;
+    // ... rest of your Promise.all code
+}
     const uid = currentUser.id;
 
     const [{ data: tx }, { data: sal }, { data: inst }, { data: sav }] = await Promise.all([
@@ -798,6 +801,7 @@ async function init() {
         sb.from('salary').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
         sb.from('installments').select('*').eq('user_id', uid).order('created_at', { ascending: false }),
         sb.from('savings').select('*').eq('user_id', uid).order('created_at', { ascending: false })
+   
     ]);
 
     state.transactions = tx || [];
