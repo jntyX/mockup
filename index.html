@@ -278,19 +278,19 @@
                         <div class="bar spent-bar" id="e-bar" style="height:0%"></div>
                         <medium style="font-size:0.6rem;margin-top:8px;opacity:0.6;">Expenses</medium>
                     </div>
-                    <!-- 🆕 Recent Expenses -->
-            <div class="glass-card" id="recent-expenses-wrap">
-            <div style="font-weight:600;font-size:0.9rem;margin-bottom:15px;">🧾 Recent Expenses</div>
-            <div id="recent-expenses-list"></div>
-        </div>
-
-    </div><!-- dashboard closes here -->
+            
                 </div>
             </div>
         </div>
 
     </div>
+<!-- Recent Expenses -->
+        <div class="glass-card" id="recent-expenses-wrap">
+            <div style="font-weight:600;font-size:0.9rem;margin-bottom:15px;">🧾 Recent Expenses</div>
+            <div id="recent-expenses-list"></div>
+        </div>
 
+    </div>
     <!-- ======================== -->
     <!-- DAILY -->
     <!-- ======================== -->
@@ -843,7 +843,7 @@ function selectMonth(idx) {
 // ========================
 function togglePrivacy() {
     document.getElementById('t-saved').classList.toggle('hidden-amt');
-    renderRecentExpenses();
+}
 }
 
 // ========================
@@ -866,7 +866,7 @@ function updateDashboardUI() {
     document.getElementById('t-sal').innerText = `₱${totalSalary.toLocaleString()}`;
     document.getElementById('t-spent').innerText = `₱${totalSpent.toLocaleString()}`;
     document.getElementById('t-saved').innerText = `₱${totalSavings.toLocaleString()}`;
-
+    renderRecentExpenses();
     // Budget monitor — premium only
     if (currentPlan === 'premium') {
         document.getElementById('budget-monitor-wrap').innerHTML = `
