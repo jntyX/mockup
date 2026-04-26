@@ -22,6 +22,77 @@
             --success: #4ade80;
         }
 
+            /* ======================== */
+/* LIGHT THEME OVERRIDES    */
+/* ======================== */
+[data-theme="light"] {
+    --bg: #f1f5f9;
+    --glass: rgba(255, 255, 255, 0.55);
+    --glass-header: rgba(255, 255, 255, 0.7);
+    --border: rgba(0, 0, 0, 0.08);
+    --text: #0f172a;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --success: #16a34a;
+}
+
+[data-theme="light"] body {
+    background: radial-gradient(circle at top right, #e2e8f0, #f1f5f9);
+    color: var(--text);
+}
+
+[data-theme="light"] input,
+[data-theme="light"] select {
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.12);
+    color: var(--text);
+}
+
+[data-theme="light"] select option {
+    background: #ffffff;
+    color: var(--text);
+}
+
+[data-theme="light"] .glass-card,
+[data-theme="light"] .modal {
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+[data-theme="light"] .modal {
+    border: 1px solid var(--accent);
+}
+
+[data-theme="light"] .summary-item {
+    background: rgba(0,0,0,0.03);
+}
+
+[data-theme="light"] .comparison-container {
+    background: rgba(0,0,0,0.04);
+}
+
+[data-theme="light"] .month-tab {
+    background: rgba(0,0,0,0.05);
+    color: #475569;
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+[data-theme="light"] .month-tab.active {
+    background: var(--accent);
+    color: #fff;
+}
+
+[data-theme="light"] th { color: #64748b; }
+[data-theme="light"] td { color: #334155; border-top: 1px solid var(--border); }
+[data-theme="light"] .nav-btn { color: #64748b; }
+[data-theme="light"] .nav-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+[data-theme="light"] .header-user { color: #475569; }
+[data-theme="light"] .btn-logout { color: #64748b; }
+[data-theme="light"] .btn-logout:hover { color: var(--danger); }
+[data-theme="light"] .premium-lock { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25); }
+[data-theme="light"] .warn-box { background: rgba(217,119,6,0.08); border: 1px solid var(--warning); }
+[data-theme="light"] .err { color: var(--danger); }
+
         * { box-sizing: border-box; }
 
         body {
