@@ -290,12 +290,13 @@
             <span style="font-weight:600;color:var(--accent);font-size:26px;">i</span>
             <span style="font-weight:300;color:#fff;font-size:26px;">y</span>
         </div>
-        <div class="header-user" id="header-user" style="display:none;">
-            <span id="header-email"></span>
-            <span id="header-plan-badge" class="plan-badge free">FREE</span>
-            <button class="btn-logout" onclick="handleLogout()">Logout</button>
-        </div>
-    </div>
+       <div class="header-user" id="header-user" style="display:none;">
+    <span id="header-username" style="font-weight:600;color:var(--text);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+    <span id="header-email" style="display:none;"></span>
+    <button onclick="toggleTheme()" id="theme-btn" title="Toggle theme" style="background:none;border:none;cursor:pointer;font-size:1.1rem;padding:4px 8px;line-height:1;">🌙</button>
+    <span id="header-plan-badge" class="plan-badge free">FREE</span>
+    <button class="btn-logout" onclick="handleLogout()">Logout</button>
+</div>
 
     <!-- NAV -->
     <nav class="nav" id="main-nav">
@@ -521,6 +522,8 @@ const SUPABASE_URL = 'https://jkdlkfsetsnzhqletkvq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImprZGxrZnNldHNuemhxbGV0a3ZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjQyMDIsImV4cCI6MjA5MTI0MDIwMn0.DnU0EKK5blNRzKGCCnzssJAJ4Lb2L03fY87kcEN6o2Q';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+
+
 // ========================
 // STATE
 // ========================
@@ -563,6 +566,25 @@ document.getElementById('main-overlay').addEventListener('click', () => {
     if (qa && qa.style.display === 'block') return;
     closeEntryModals();
 });
+
+// ========================
+// THEME TOGGLE
+// ========================
+function toggleTheme() {
+    const body = document.body;
+    const current = body.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    body.setAttribute('data-theme', next);
+    localStorage.setItem('talliy-theme', next);
+    document.getElementById('theme-btn').innerText = next === 'light' ? '☀️' : '🌙';
+}
+
+function loadTheme() {
+    const saved = localStorage.getItem('talliy-theme') || 'dark';
+    document.body.setAttribute('data-theme', saved);
+    const btn = document.getElementById('theme-btn');
+    if (btn) btn.innerText = saved === 'light' ? '☀️' : '🌙';
+}
 
 // ========================
 // UNLOCK APP
@@ -1264,6 +1286,7 @@ async function deleteSavings(id) {
 // ENTRY POINT
 // ========================
 window.onload = async () => {
+    loadTheme();
     // 1. Get the current session
     const { data: { session } } = await sb.auth.getSession();
 
