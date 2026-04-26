@@ -278,6 +278,13 @@
                         <div class="bar spent-bar" id="e-bar" style="height:0%"></div>
                         <medium style="font-size:0.6rem;margin-top:8px;opacity:0.6;">Expenses</medium>
                     </div>
+                    <!-- 🆕 Recent Expenses -->
+            <div class="glass-card" id="recent-expenses-wrap">
+            <div style="font-weight:600;font-size:0.9rem;margin-bottom:15px;">🧾 Recent Expenses</div>
+            <div id="recent-expenses-list"></div>
+        </div>
+
+    </div><!-- dashboard closes here -->
                 </div>
             </div>
         </div>
@@ -836,6 +843,7 @@ function selectMonth(idx) {
 // ========================
 function togglePrivacy() {
     document.getElementById('t-saved').classList.toggle('hidden-amt');
+    renderRecentExpenses();
 }
 
 // ========================
@@ -899,7 +907,40 @@ function updateCategoryDropdown() {
         sel.innerHTML += `<option value="ADD_NEW" style="color:var(--accent);">➕ Add New Category</option>`;
     }
 }
-
+// ========================
+// RECENT EXPENSES (Dashboard)
+// ========================
+function renderRecentExpenses() {
+    const listEl = document.getElementById('recent-expenses-list');
+    if (currentPlan !== 'premium') {
+        listEl.innerHTML = premiumLockHTML('Recent Expenses');
+        return;
+    }
+    const recent = state.transactions
+        .filter(t => {
+            const d = new Date(t.created_at);
+            return d.toLocaleString('default', { month: 'long' }) === selectedMonth;
+        })
+        .slice(0, 10);
+    if (!recent.length) {
+        listEl.innerHTML = `<div style="text-align:center;opacity:0.5;font-size:0.85rem;">No expenses for ${selectedMonth} yet.</div>`;
+        return;
+    }
+    listEl.innerHTML = recent.map(t => `
+        <div style="display:flex;justify-content:space-between;align-items:center;
+            padding:10px 0;border-bottom:1px solid var(--border);">
+            <div>
+                <div style="font-size:0.88rem;font-weight:500;">${t.item}</div>
+                <div style="font-size:0.72rem;color:#64748b;margin-top:2px;">
+                    ${t.category} · ${new Date(t.created_at).toLocaleDateString()}
+                </div>
+            </div>
+            <div style="font-weight:600;color:var(--danger);font-size:0.9rem;flex-shrink:0;margin-left:10px;">
+                -₱${parseFloat(t.amount).toLocaleString()}
+            </div>
+        </div>
+    `).join('');
+}
 // ========================
 // DAILY TABLE
 // ========================
