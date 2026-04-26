@@ -600,14 +600,13 @@ async function saveQA() {
         }).eq('user_id', userId); 
 
         if (updateError) {
-    console.error("Database Update Error:", updateError);
-    alert("Profile update failed: " + updateError.message + " | userId: " + userId);
-    btn.innerText = 'Save & Finish ✅'; return;
-}
-// Add this line to verify the update worked:
-console.log("Profile updated for userId:", userId, "hashedPass:", hashedPass);
+            console.error("Database Update Error:", updateError);
+            alert("Profile update failed: " + updateError.message);
+            btn.innerText = 'Save & Finish ✅';
+            return;
         }
     }
+    // ------------------------------------------
     // ------------------------------------------
 
     sessionStorage.removeItem('pending_email');
