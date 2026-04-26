@@ -577,6 +577,7 @@ async function saveQA() {
         btn.innerText = 'Save & Finish ✅'; 
         return;
     }
+}
 
     // 1. Create the Auth User (This triggers the SQL function in Supabase)
     const { data: authData, error: authError } = await sb.auth.signUp({
